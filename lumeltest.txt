@@ -1,0 +1,51 @@
+CREATE TABLE delattmp (
+    id INT PRIMARY KEY ,
+    Driver_Id VARCHAR(50) ,
+    Del_Stat VARCHAR(50) NOT NULL,  
+    Del_Time DATETIME NOT NULL  
+);
+
+
+INSERT INTO delattmp (id, Driver_Id, Del_Stat, Del_Time) VALUES
+(101, 101, 'Delivered', '2024-01-15 10:30:00'),
+(102, 101, 'Pending',   '2024-03-22 14:45:00'),
+(103, 101, 'Cancelled', '2024-05-10 09:15:00'),
+(104, 101, 'Delivered', '2024-07-18 18:20:00'),
+(105, 101, 'In Transit','2024-09-05 12:00:00'),
+(106, 102, 'Delivered', '2024-09-26 12:00:00'),
+(107, 102, 'Delivered', '2024-09-29 12:00:00'),
+(108, 102, 'Delivered', '2024-09-21 12:00:00'),
+(109, 102, 'Delivered', '2024-09-18 12:00:00'),
+(110, 102, 'Delivered', '2024-09-18 12:00:00'),
+(111, 103, 'Delivered', '2024-01-15 10:30:00'),
+(112, 103, 'Delivered', '2024-03-22 14:45:00'),
+(113, 103, 'Delivered', '2024-05-10 09:15:00'),
+(114, 103, 'Delivered', '2024-07-18 18:20:00'),
+(115, 103, 'Delivered', '2024-09-05 12:00:00'),
+(116, 103, 'Delivered', '2024-09-05 12:00:00');
+select * from delattmp
+
+
+
+SELECT Driver_Id,COUNT(*) AS total_deliveries,
+    ROUND(
+        SUM(CASE WHEN Del_Stat = 'Delivered' THEN 1 ELSE 0 END) * 100.0 
+        / COUNT(*), 
+    2) AS success_rate
+FROM delattmp
+WHERE Del_Time >= '2024-09-01'
+  AND Del_Time <  '2024-10-01'
+GROUP BY Driver_Id
+HAVING 
+    COUNT(*) >= 5
+    AND 
+    (SUM(CASE WHEN Del_Stat = 'Delivered' THEN 1 ELSE 0 END) * 100.0 
+     / COUNT(*)) >= 90
+ORDER BY success_rate DESC;
+
+
+
+
+
+
+
